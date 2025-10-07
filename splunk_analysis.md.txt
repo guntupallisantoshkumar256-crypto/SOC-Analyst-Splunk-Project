@@ -1,0 +1,28 @@
+Splunk Analysis: Brute Force Detection
+
+ Objective:
+===============
+
+Detect brute-force login attempts by identifying IP addresses with more than 3 failed login attempts.
+
+Data Source
+================
+File : "Login_attemptss.csv"
+
+fields: `timestamp`, `username`, `ip_address`, `status`
+Indexed in Splunk under: `index=soc_logs`, sourcetype: `csv`
+
+ SPL Query
+```spl
+index=soc_logs status=FAIL
+| stats count by username, ip_address
+| where count > 3
+
+Alert Configuration
+Alert Name: Brute Force Detection
+
+Trigger Condition: Number of results > 0
+
+Trigger Action: Add to Triggered Alerts (or email if configured)
+
+Schedule: Run every monday
